@@ -9,35 +9,31 @@ import {
   Text,
   TopNavigation,
   TopNavigationAction,
-  Spinner,
 } from "@ui-kitten/components";
 import { useSelector, useDispatch } from "react-redux";
 import { load } from "../actions";
 import { backgroundObj } from "../resources/backgrounds";
 import checkUnit from '../utils/checkUnit';
+import SpinnerAtom from '../components/atoms/SpinnerAtom';
+import ParagraphText from '../components/atoms/ParagraphText';
+import BackgroundImage from '../components/atoms/BackgroundImage';
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 export const DetailsScreen = ({ route, navigation }) => {
+
+  //import lodash
+  const _ = require('lodash');
+
   const [message, setMessage] = useState("");
   const isLoading = useSelector((state) => state.loadStatus);
   const dispatch = useDispatch();
-  // const [weather, setWeather] = useState([]);
-  // const [temp, setTemp] = useState({});
-  // const [cityInfo, setCityInfo] = useState({
-  //   name: "",
-  //   country: "",
-  //   longitude: "",
-  //   latitude: "",
-  //   timezone: 0,
-  // });
   const [weatherData, setWeatherData] = useState({});
 
   const unit = useSelector((state) => state.unit)
 
   const { cityName } = route.params;
 
-  const _ = require('lodash');
 
   useEffect(() => {
     const getWeather = async (cityName) => {
@@ -96,18 +92,17 @@ export const DetailsScreen = ({ route, navigation }) => {
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       >
         {isLoading ? (
-          <Spinner size="large" style={{ zIndex: 7 }} />
+          <SpinnerAtom />
         ) : (
           <>
             {!weatherData.name ? (
-              <Text category="p" style={{ marginBottom: 5 }}>
+              <ParagraphText>
                 Message: {message.toUpperCase()}{" "}
-              </Text>
+              </ParagraphText>
             ) : (
               <>
-                <Image
-                  source={{ uri: backgroundObj[weatherMain ? weatherMain.toLowerCase() : "clouds"] }}
-                  style={styles.backgroundImage}
+                <BackgroundImage
+                  imgURL= {backgroundObj[weatherMain ? weatherMain.toLowerCase() : "clouds"] }
                 />
                 <Card style={{ margin: 10 }}>
                   <Avatar source={{ uri: imgURL }} />
@@ -142,14 +137,3 @@ export const DetailsScreen = ({ route, navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    position: "absolute",
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    opacity: 0.3,
-  },
-});
